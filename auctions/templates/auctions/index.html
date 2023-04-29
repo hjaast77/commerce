@@ -1,0 +1,68 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="align-center">Active Listings</h2>
+
+    <div class="product-list">
+        <ul class="cards">
+            {% for listing in listings %}
+                <li class="item">
+                    <a href="{% url 'auctions' listing.id %}">
+                        <div class="title">
+                        {{listing}}
+                        </div>
+                        <div class="image">
+                            <img src="{{listing.image_url}}" alt="">
+                        </div>
+                        <div class="description">
+                            {{listing.description}}
+                        </div>
+                        <div class="price">
+                            <span>Current Price: </span>
+                            <span class="number">{% if  listing.current_bid == None  %}
+                                USD {{listing.starting_bid}}
+                            {% else %}
+                                USD {{listing.current_bid}}
+                            {% endif %}
+                            </span>
+                        </div>
+                    </a>    
+
+                </li>
+                {% empty %}
+                <div>No Listings yet!</div>
+            {% endfor %}
+
+
+        </ul>
+    </div>
+
+        <!-- <ul class="list">
+            {% for listing in listings %}
+            <li class="item">
+                
+                    
+                    <div>
+                        <a href="{% url 'auctions' listing.id %}"><img src="{{listing.image_url}}" alt=""></a>
+                        
+                    </div>
+                    <div class="detail">
+                        <div>{{listing}}</div>
+                        <div>{% if  listing.current_bid == None  %}
+                                USD {{listing.starting_bid}}
+                            {% else %}
+                                USD {{listing.current_bid}}
+                            {% endif %}
+                        </div>
+                        <div>Sold by {{listing.seller}}</div>
+                        <div>{{listing.created}}</div>
+                    </div>
+                    {% empty %}
+                    <div>No Listings yet!</div>
+                  
+                {% endfor %}
+                
+            </li>
+        </ul> -->
+    
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>New Listing</h2>
+
+    <form method="POST" action="{% url 'create' %}">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" name="title" id="title" placeholder="Auction Title" required>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" name="description" id="description" rows="3" required>Description</textarea>
+      </div>
+      <div class="mb-3">
+        <label for="url" class="form-label">Image URL</label>
+        <input type="text" name="image_url" class="form-control" id="url" placeholder="Image URL">
+      </div>
+      <div class="mb-3">
+        <label for="price" class="form-label">Starting bid</label>
+        <input type="number" name="starting_bid" class="form-control" id="price" placeholder="Price" required>
+      </div>
+
+      <span>Category:</span> 
+      <div class="form-check">
+        
+        {% for category in category %}
+        <div>
+            <input class="form-check-input" type="checkbox" name="category[]" value="{{category}}" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+        {{category}}
+            </label>
+        </div>
+            {% endfor %}
+      </div>
+
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+
+      </form>
+    
+{% endblock %}

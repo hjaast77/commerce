@@ -1,0 +1,30 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<section class="product-detail">
+<div class="left"><img src="{{auction.image_url}}" alt=""></div>
+<div class="right">
+    <h2>{{auction.title}}</h2>
+    <hr>
+    <ul>
+        <li>
+            Sold by {{auction.seller}} since {{auction.created}}
+        </li>
+        {% if commentFound %}
+            {{comment}}
+        {% else %}
+                {{comment}} 
+        {% endif %}
+
+    
+
+       
+
+
+
+    </ul>
+</div>
+</section>
+       
+    
+{% endblock %}
