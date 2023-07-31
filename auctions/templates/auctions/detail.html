@@ -5,26 +5,103 @@
 <div class="left"><img src="{{auction.image_url}}" alt=""></div>
 <div class="right">
     <h2>{{auction.title}}</h2>
+    <h3>{{auction.description }}</h3>
+    
+    {% if user.is_authenticated %}
+        
+        {% if  auction.active == False %}
+            {% if auction.bids.exists %}
+                {% with winning_bid=auction.bids.last %}
+                    {% if winning_bid.bidder == user %}
+                    <div class="alert alert-success">
+                    Congratulations! You won the auction with a bid of USD {{ winning_bid.amount }}.
+                    </div>
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+                    Nobody made bids on this item
+            {% endif %}
+        {% else %}
+            {% if user == auction.seller %}    
+                <form method="post" action="{% url 'change_active_status' auction.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Close Auction</button>
+                    </form>
+            {% endif %}
+
+        {% endif %}
+            
+    {% endif %}
+
     <hr>
+
     <ul>
         <li>
             Sold by {{auction.seller}} since {{auction.created}}
         </li>
-        {% if commentFound %}
-            {{comment}}
+        <p class="price">
+
+        {% if auction.bids.exists %}
+            Current bid: USD {{ auction.bids.last.amount }}
         {% else %}
-                {{comment}} 
+            USD {{ auction.starting_bid }}
+        {% endif %}
+        </p>
+
+        {% for comment in comments %}
+            <p>{{ comment.text }} <span class="author">| by {{ comment.author }} </span></p>
+            <hr>
+            {% empty %}
+            <p>No comments yet! Feel free to add one.</p>
+        {% endfor %}
+
+
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+          </div>
         {% endif %}
 
-    
+ 
+            {% if user.is_authenticated  %}
+                {% if auction.active == True %}   
+                    <form method="post" action="{% url 'auctions' auction.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                        <input type="number" name="bid_amount" step="0.01" min="{{ auction.starting_bid }}" required>
+                        <button type="submit">Place Bid</button>
+                    </form>
 
-       
+                    <form method="post" action="{% url 'add_comment' auction.id %}">
+                        {% csrf_token %}
+                        <textarea name="comment_text" rows="3" required></textarea>
+                        <button type="submit">Add Comment</button>
+                    </form>
 
+                    {% if user.watchlists.exists %}
+                        {% if auction in user.watchlists.first.listings.all %}
+                            <form action="{% url 'remove_watchlist' auction.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Remove from Watchlist</button>
+                                </form>
+                        {% else %}
+                                <form action="{% url 'add_watchlist' auction.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Add to Watchlist</button>
+                            </form>
+                        {% endif %}
 
+                    {% endif %}
+                {% else %}
+                    Cannot bid on closed auctions!
+                {% endif %}
 
+            {% else %}
+                <p>Please <a href="{% url 'login' %}">login</a> to manage your watchlist or bid on this item.</p>
+            {% endif %}
+         
     </ul>
 </div>
 </section>
        
-    
 {% endblock %}

@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="align-center">{{ user.watchlists.first }}</h2>
+
+    <div class="product-list">
+        <ul>
+
+            {% if user.watchlists.exists %}
+                <!-- <h3>{{ user.watchlists.first }}</h3> -->
+                <ul>
+                    {% for listing in user.watchlists.first.listings.all %}
+                        <li><a href="{% url 'auctions' listing.id %}"> {{ listing.title }}</li></a>
+                    {% endfor %}
+            </ul>
+            {% else %}
+                <p>your Watchlist is currently empty</p>
+            {% endif %}
+
+           
+        </ul>
+    </div>
+    
+{% endblock %}

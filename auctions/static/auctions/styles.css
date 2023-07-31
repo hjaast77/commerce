@@ -111,3 +111,8 @@ font-weight: bold;
     margin-left: 1rem;
     width: 30rem;
 }
+
+.author{
+    font-style: italic;
+    color: rgb(156, 149, 149);
+}

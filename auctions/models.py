@@ -17,7 +17,6 @@ class Listing(models.Model):
     description = models.TextField()
     image_url = models.URLField(blank=True, null=True)
     starting_bid = models.DecimalField(max_digits=10, decimal_places=2)
-    current_bid = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     category = models.ManyToManyField(Category, blank=True)
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     active = models.BooleanField(default=True)
@@ -48,8 +47,8 @@ class Comment(models.Model):
 
 
 class Watchlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist")
-    listing = models.ManyToManyField(Listing)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlists")
+    listings = models.ManyToManyField(Listing, related_name="watchlists")
 
     def __str__(self):
         return f"{self.user}'s watchlist"

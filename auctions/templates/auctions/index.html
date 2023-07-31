@@ -19,10 +19,10 @@
                         </div>
                         <div class="price">
                             <span>Current Price: </span>
-                            <span class="number">{% if  listing.current_bid == None  %}
-                                USD {{listing.starting_bid}}
+                            <span class="number"> {% if listing.bids.exists %}
+                                USD {{ listing.bids.last.amount }}
                             {% else %}
-                                USD {{listing.current_bid}}
+                                USD {{ listing.starting_bid }}
                             {% endif %}
                             </span>
                         </div>
@@ -36,33 +36,5 @@
 
         </ul>
     </div>
-
-        <!-- <ul class="list">
-            {% for listing in listings %}
-            <li class="item">
-                
-                    
-                    <div>
-                        <a href="{% url 'auctions' listing.id %}"><img src="{{listing.image_url}}" alt=""></a>
-                        
-                    </div>
-                    <div class="detail">
-                        <div>{{listing}}</div>
-                        <div>{% if  listing.current_bid == None  %}
-                                USD {{listing.starting_bid}}
-                            {% else %}
-                                USD {{listing.current_bid}}
-                            {% endif %}
-                        </div>
-                        <div>Sold by {{listing.seller}}</div>
-                        <div>{{listing.created}}</div>
-                    </div>
-                    {% empty %}
-                    <div>No Listings yet!</div>
-                  
-                {% endfor %}
-                
-            </li>
-        </ul> -->
     
 {% endblock %}
