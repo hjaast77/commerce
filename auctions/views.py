@@ -1,13 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .models import Listing, Category, Comment, Bid, Watchlist
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from .models import User
+
 
 
 
@@ -106,6 +107,7 @@ def auctions(request, auction_id):
 
 @login_required(login_url='/login')
 def create(request):
+    
     if request.method =="POST":
         form = NewListingForm(request.POST)
         if form.is_valid():
@@ -187,3 +189,8 @@ def change_active_status(request, auction_id):
 def categories(request):
     categories = Category.objects.all()
     return render(request, "auctions/categories.html", {"categories": categories})
+
+def category_detail(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    listings = Listing.objects.filter(category=category, active=True)
+    return render(request, "auctions/categories_detail.html", {"category": category, "listings": listings})

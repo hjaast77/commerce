@@ -6,21 +6,10 @@
     <div class="product-list">
         <ul>
             {% for category in categories %}
-            <h2>{{ category.name }}</h2>
-            <ul>
-                {% for listing in category.listing_set.all %}
-                    {% if listing.active %}
-                        <li>
-                            <a href="{% url 'auctions' auction_id=listing.id %}">{{ listing.title }}</a>
-                        </li>
-                    {% endif %}
-                {% empty %}
-                    <li>No Listings</li>
-                {% endfor %}
-            </ul>
-        {% endfor %}
-           
-        </ul>
+            <h2><a href="{% url 'category_detail' category_id=category.id %}">{{ category.name }}</a></h2>
+               
+            {% endfor %}
+
     </div>
     
 {% endblock %}
