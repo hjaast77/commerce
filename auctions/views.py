@@ -18,7 +18,7 @@ class NewListingForm(forms.ModelForm):
     starting_bid = forms.DecimalField(max_digits=10, decimal_places=2)
     class Meta:
         model = Listing
-        fields = ['title', 'description', 'image_url', 'starting_bid']
+        fields = ['title', 'description', 'image_url', 'starting_bid', 'category']
         
 def index(request):
     return render(request, "auctions/index.html", {"listings": Listing.objects.exclude(active=False)})
@@ -122,14 +122,17 @@ def create(request):
 
             new_listing.save()
             form.save_m2m()
+            return redirect('index')
         
         else:
-            
+            return render(request, "auctions/create.html", {"form": form})
             #return render(request, "auctions/create.html", {"form": form})
             form = NewListingForm()
-        
-    
+    else:
+        return render(request, "auctions/create.html", {"form": NewListingForm()})
+
     return render(request, "auctions/create.html", {"form": form})
+
     
 def add_comment(request, auction_id):
     if request.method == 'POST':
@@ -188,7 +191,25 @@ def change_active_status(request, auction_id):
 @login_required(login_url='/login')
 def categories(request):
     categories = Category.objects.all()
-    return render(request, "auctions/categories.html", {"categories": categories})
+    
+    category_images = {
+        "Electronics": "electronics.jpg",
+        "Music": "music.jpg",
+        "Furniture": "furniture.jpg",
+        "Sports": "sports.jpg",
+        "Beauty & Personal Care": "beauty.jpg",
+    }
+    
+    context = {
+        "categories": categories,
+        "category_images": category_images,
+    }
+    
+    for category in categories:
+        image_name = category_images.get(category.name, 'default.jpg')
+        category.image_path = f'auctions/img/{image_name}'
+    
+    return render(request, "auctions/categories.html", context)
 
 def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)

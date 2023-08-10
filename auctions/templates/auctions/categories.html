@@ -1,15 +1,19 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
 
 {% block body %}
     <h2 class="align-center">Available Categories</h2>
 
-    <div class="product-list">
-        <ul>
-            {% for category in categories %}
-            <h2><a href="{% url 'category_detail' category_id=category.id %}">{{ category.name }}</a></h2>
-               
-            {% endfor %}
+    <section id="feature" class="section-p1">
+        {% for category in categories %}
+        <div class="cat-box">
+            <img src="{% static category.image_path %}" alt="{{ category.name }} Image" width="650">
+            <h3><a href="{% url 'category_detail' category_id=category.id %}">{{ category.name }}</a></h2>
+        </div>
+        {% endfor %}
 
-    </div>
+    </section>
+
+
     
 {% endblock %}
