@@ -1,24 +1,43 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2 class="align-center">{{ user.watchlists.first }}</h2>
 
-    <div class="product-list">
-        <ul>
-
-            {% if user.watchlists.exists %}
-                <!-- <h3>{{ user.watchlists.first }}</h3> -->
-                <ul>
-                    {% for listing in user.watchlists.first.listings.all %}
-                        <li><a href="{% url 'auctions' listing.id %}"> {{ listing.title }}</li></a>
-                    {% endfor %}
-            </ul>
-            {% else %}
-                <p>your Watchlist is currently empty</p>
-            {% endif %}
-
-           
-        </ul>
-    </div>
+<div class="section-p1 prod1" >
     
+    <h2>{{user| capfirst}}'s Watchlist</h2>
+
+    </div>
+
+    <section id="products" class="section-p1">
+        {% if user.watchlists.exists %}
+            {% for listing in user.watchlists.first.listings.all %}
+            <div class="product-card">
+                <a href="{% url 'auctions' listing.id %}">
+                    <div class="pro">
+                        <img src="{{listing.image_url}}" alt="">
+                        <div class="desc">
+                            <h2>{{listing}}</h2>
+                            <span>{{listing.description}}</spavn>
+                            <h3>Current Price:</h3>
+                            <h3>{% if listing.bids.exists %}
+                            USD {{ listing.bids.last.amount }}
+                            {% else %}
+                            USD {{ listing.starting_bid }}
+                            {% endif %}</h3>
+                            <h4>Bid!</h4>   
+                        </div>
+                    </div>
+                </a>
+                
+            </div>
+   
+            {% endfor %}
+            {% else %}
+            <p>your Watchlist is currently empty</p>
+        {% endif %}
+
+        </section>
+            
+
+
 {% endblock %}

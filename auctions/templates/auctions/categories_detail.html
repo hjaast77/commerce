@@ -2,52 +2,38 @@
 
 {% block body %}
 
-<!-- {{category}}
+                <div class="section-p1 prod1" >
+                    <h2>Active Listings for {{ category }}</h2>
 
-{% for listing in category.listing_set.all %}
-                    {% if listing.active %}
-                        <li>
-                            <a href="{% url 'auctions' auction_id=listing.id %}">{{ listing.title }}</a>
-                        </li>
-                    {% endif %}
-                {% empty %}
-                    <li>No Listings</li>
-                {% endfor %} -->
-                
-                <h2 class="align-center">Active Listings for {{ category }}</h2>
-
-                <div class="product-list">
-                    <ul class="cards">
-                        {% for listing in listings %}
-                            <li class="item">
+                    </div>
+                    
+                        <section id="products" class="section-p1">
+                    
+                            {% for listing in listings %}
+                            <div class="product-card">
                                 <a href="{% url 'auctions' listing.id %}">
-                                    <div class="title">
-                                    {{listing}}
-                                    </div>
-                                    <div class="image">
+                                    <div class="pro">
                                         <img src="{{listing.image_url}}" alt="">
-                                    </div>
-                                    <div class="description">
-                                        {{listing.description}}
-                                    </div>
-                                    <div class="price">
-                                        <span>Current Price: </span>
-                                        <span class="number"> {% if listing.bids.exists %}
+                                        <div class="desc">
+                                            <h2>{{listing}}</h2>
+                                            <span>{{listing.description}}</spavn>
+                                            <h3>Current Price:</h3>
+                                            <h3>{% if listing.bids.exists %}
                                             USD {{ listing.bids.last.amount }}
-                                        {% else %}
+                                            {% else %}
                                             USD {{ listing.starting_bid }}
-                                        {% endif %}
-                                        </span>
+                                            {% endif %}</h3>
+                                            <h4>Bid!</h4>   
+                                        </div>
                                     </div>
-                                </a>    
-            
-                            </li>
+                                </a>
+                                
+                            </div>
+                          
+                            
                             {% empty %}
-                            <div>No Listings yet!</div>
-                        {% endfor %}
-            
-            
-                    </ul>
-                </div>
-
-{% endblock %}
+                                    <div>No Listings yet!</div>
+                            {% endfor %}
+                        </section>
+                        
+                    {% endblock %}

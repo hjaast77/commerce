@@ -180,7 +180,7 @@ def change_active_status(request, auction_id):
     auction = Listing.objects.get(id=auction_id)
     if request.method == 'POST':
         if request.user == auction.seller:
-            auction.active = False
+            auction.active = not auction.active
             auction.save()
             return redirect('auctions', auction_id=auction_id)
         else:

@@ -1,40 +1,44 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2 class="align-center">Active Listings</h2>
+<div class="section-p1 prod1" >
+<h2>Active Listings</h2>
+<p>New products every day!</p>
+</div>
 
-    <div class="product-list">
-        <ul class="cards">
-            {% for listing in listings %}
-                <li class="item">
-                    <a href="{% url 'auctions' listing.id %}">
-                        <div class="title">
-                        {{listing}}
-                        </div>
-                        <div class="image">
-                            <img src="{{listing.image_url}}" alt="">
-                        </div>
-                        <div class="description">
-                            {{listing.description}}
-                        </div>
-                        <div class="price">
-                            <span>Current Price: </span>
-                            <span class="number"> {% if listing.bids.exists %}
-                                USD {{ listing.bids.last.amount }}
-                            {% else %}
-                                USD {{ listing.starting_bid }}
-                            {% endif %}
-                            </span>
-                        </div>
-                    </a>    
+    <section id="products" class="section-p1">
 
-                </li>
-                {% empty %}
+        {% for listing in listings %}
+        <div class="product-card">
+            <a href="{% url 'auctions' listing.id %}">
+                <div class="pro">
+                    <img src="{{listing.image_url}}" alt="">
+                    <div class="desc">
+                        <h2>{{listing}}</h2>
+                        <span>{{listing.description}}</spavn>
+                        <h3>Current Price:</h3>
+                        <h3>{% if listing.bids.exists %}
+                        USD {{ listing.bids.last.amount }}
+                        {% else %}
+                        USD {{ listing.starting_bid }}
+                        {% endif %}</h3>
+                        <h4>Bid!</h4>   
+                    </div>
+                </div>
+            </a>
+            
+        </div>
+      
+        
+        {% empty %}
                 <div>No Listings yet!</div>
-            {% endfor %}
+        {% endfor %}
+    </section>
 
-
-        </ul>
-    </div>
+    <section id="pagination" class="section-p1">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#"><i class="fas fa-long-arrow-alt-right"></i></a>
+    </section>
     
 {% endblock %}
