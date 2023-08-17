@@ -27,32 +27,32 @@
         </header>
 
             <section id="header">
-                <div class="logo"><img src="{% static 'auctions/img/logo.png' %}" alt="" width="100px">
+                <div class="logo"><a href="/"><img src="{% static 'auctions/img/logo.png' %}" alt="" width="100px"></a>
                 </div>
                 <div>
                     <ul id="navbar">
                         <li>
-                            <a class="active" href="{% url 'index' %}">Active Listings</a>
+                            <a class="{% if request.path == '/' %}active{% endif %}" href="{% url 'index' %}">Active Listings</a>
                         </li>
                         <li>
-                            <a href="{% url 'categories' %}">Categories</a>
+                            <a class="{% if request.path == '/categories' %}active{% endif %}" href="{% url 'categories' %}">Categories</a>
                         </li>
                         {% if user.is_authenticated %}
                         <li>
-                            <a href="{% url 'create' %}">Create</a>
+                            <a class="{% if request.path == '/create' %}active{% endif %}" href="{% url 'create' %}">Create</a>
                         </li>
                         <li>
-                            <a href="{% url 'watchlist' %}">Watchlist</a>
+                            <a class="{% if request.path == '/watchlist' %}active{% endif %}" href="{% url 'watchlist' %}">Watchlist</a>
                         </li>
                         <li>
                             <a href="{% url 'logout' %}">Log Out</a>
                         </li>
                         {% else %}
                             <li>
-                                <a href="{% url 'login' %}">Log In</a>
+                                <a class="{% if request.path == '/login' %}active{% endif %}" href="{% url 'login' %}">Log In</a>
                             </li>
                             <li>
-                                <a href="{% url 'register' %}">Register</a>
+                                <a class="{% if request.path == '/register' %}active{% endif %}" href="{% url 'register' %}">Register</a>
                             </li>
                         {% endif %}
                     </ul>

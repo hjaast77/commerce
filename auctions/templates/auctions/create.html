@@ -1,9 +1,11 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>New Listing</h2>
 
-    <form method="POST" action="{% url 'create' %}">
+<section class="section-p1">
+    <h2 class="title">New Listing</h2>
+
+    <form id="entryform" method="POST" action="{% url 'create' %}">
         {% csrf_token %}
         
         {{form.as_p}}
@@ -13,5 +15,7 @@
       </div>
 
       </form>
+
+    </section> 
     
 {% endblock %}

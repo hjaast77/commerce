@@ -75,6 +75,7 @@ def register(request):
     
 def auctions(request, auction_id):
     auction = Listing.objects.get(id=auction_id)
+    categories = auction.category.all()
     comments = Comment.objects.filter(listing=auction)
     commentFound = comments.exists()
     error = None  # Variable for storing error message
@@ -103,7 +104,7 @@ def auctions(request, auction_id):
                     error = "Invalid Bid format!."
                 
     
-    return render(request, "auctions/detail.html", {"auction": auction, "comments": comments, "commentFound": commentFound, "error": error, "user": request.user,})
+    return render(request, "auctions/detail.html", {"auction": auction, "categories": categories, "comments": comments, "commentFound": commentFound, "error": error, "user": request.user,})
 
 @login_required(login_url='/login')
 def create(request):
@@ -116,9 +117,9 @@ def create(request):
             new_listing.starting_bid = form.cleaned_data["starting_bid"]
             new_listing.seller = request.user
 
-            new_listing.title = form.cleaned_data["title"]  # Guardar el título
-            new_listing.description = form.cleaned_data["description"]  # Guardar la descripción
-            new_listing.image_url = form.cleaned_data["image_url"]  # Guardar la URL de la imagen
+            new_listing.title = form.cleaned_data["title"]  
+            new_listing.description = form.cleaned_data["description"]  
+            new_listing.image_url = form.cleaned_data["image_url"]  
 
             new_listing.save()
             form.save_m2m()
@@ -126,7 +127,6 @@ def create(request):
         
         else:
             return render(request, "auctions/create.html", {"form": form})
-            #return render(request, "auctions/create.html", {"form": form})
             form = NewListingForm()
     else:
         return render(request, "auctions/create.html", {"form": NewListingForm()})
@@ -188,7 +188,7 @@ def change_active_status(request, auction_id):
     else:
         return HttpResponse("Method not allowed.")
     
-@login_required(login_url='/login')
+
 def categories(request):
     categories = Category.objects.all()
     

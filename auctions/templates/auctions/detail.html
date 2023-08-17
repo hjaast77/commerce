@@ -9,97 +9,111 @@
         <img src="{{auction.image_url}}" width="100%" alt="">
     </div>
     <div class="sinlge-prod-details">
-        <div class="status-msg">
+        <div class="top-buttons">
             {% if user.is_authenticated %}
-
-            {% if auction.active == False %}
-            <div class="closed">
-                <h4>Auction closed!</h4>
-            </div>
-            {% if auction.bids.exists %}
-            {% with winning_bid=auction.bids.last %}
-            {% if winning_bid.bidder == user %}
-            <div class="alert alert-success">
-                Congratulations! You won the auction with a bid of USD {{ winning_bid.amount }}.
-            </div>
-            {% endif %}
-            {% endwith %}
-            {% else %}
-            Nobody made bids on this item
-            {% endif %}
-
-            {% if user == auction.seller %}
-            <form method="post" action="{% url 'change_active_status' auction.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success">OPEN Auction</button>
-            </form>
-            {% endif %}
-
-
-            {% else %}
-            {% if user == auction.seller %}
-            <form method="post" action="{% url 'change_active_status' auction.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Close Auction</button>
-            </form>
-            {% endif %}
-
-            {% endif %}
-
-
-            {% endif %}
-        </div>
-        {% if error %}
-        <div class="alert alert-danger" role="alert">
-            {{ error }}
-        </div>
-        {% endif %}
-        <h6 id="auccat">Auction Categories</h6>
-        <h4>{{auction.title}}</h4>
-        <h7>{{auction.description }}</h7>
-        <h5>Published by {{auction.seller}} on {{auction.created}}</h2>
-
-            <h2>Current Pice: USD {% if auction.bids.exists %}
-                {{ auction.bids.last.amount }}
-                {% else %}
-                {{ auction.starting_bid }}
-                {% endif %}
-            </h2>
-            {% if user.is_authenticated %}
-                {% if auction.active == True %}
-                <form method="post" action="{% url 'auctions' auction.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                    <input type="number" name="bid_amount" step="0.01" min="{{ auction.starting_bid }}" required>
-                    <button type="submit">Place Bid</button>
-                    </form>
-
-                    <form method="post" action="{% url 'add_comment' auction.id %}">
-                    {% csrf_token %}
-                    <textarea name="comment_text" rows="3" required></textarea>
-                    <button type="submit">Add Comment</button>
-
-                    </form>
-                    <div class="watch">
-                    {% if user.watchlists.exists %}
-                        {% if auction in user.watchlists.first.listings.all %}
-                            <form action="{% url 'remove_watchlist' auction.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger remwatchlist">Remove from Watchlist</button>
-                            </form>
-                        {% else %}
-                            <form action="{% url 'add_watchlist' auction.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary addwatchlist">Add to Watchlist</button>
-                            </form>
-                        {% endif %}
+            <div class="watchlist-buttons">
+                {% if user.watchlists.exists %}
+                    {% if auction in user.watchlists.first.listings.all %}
+                        <form action="{% url 'remove_watchlist' auction.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger remwatchlist">Remove from Watchlist</button>
+                        </form>
                     {% else %}
                         <form action="{% url 'add_watchlist' auction.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary addwatchlist">Add to Watchlist</button>
                         </form>
                     {% endif %}
+                {% else %}
+                    <form action="{% url 'add_watchlist' auction.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary addwatchlist">Add to Watchlist</button>
+                    </form>
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="openclose">
+                {% if user.is_authenticated %}
+                    {% if auction.active == False %}
+                        {% if user == auction.seller %}
+                            <form method="post" action="{% url 'change_active_status' auction.id %}">
+                                {% csrf_token %}                    
+                                <button type="submit" class="btn btn-success open">OPEN Auction</button>
+                            </form>  
+                        {% endif %}
+                    {% else %}
+                        {% if user == auction.seller %}   
+                            <form method="post" action="{% url 'change_active_status' auction.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger close">Close Auction</button>
+                            </form>
+                        
+                        {% endif %}
+                    {% endif %}
+                {% endif %}   
+            </div>
+        </div>
+            {% if user.is_authenticated %}
+                {% if auction.active == False %}
+                    <div class="closed">
+                        <h4>Auction closed!</h4>
                     </div>
+                        {% if auction.bids.exists %}
+                            {% with winning_bid=auction.bids.last %}
+                                {% if winning_bid.bidder == user %}
+                                    <div class="alert alert-success">
+                                        Congratulations! You won the auction with a bid of USD {{ winning_bid.amount }}.
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                        No one bid for this auction
+                        {% endif %}
+                {% endif %}
+            {% endif %}
+        
+        {% if error %}
+        <div class="alert alert-danger error-msg" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+        <h6 id="auccat">
+            <p>Category: {% for category in categories %}{{ category.name }}{% if not forloop.last %} / {% endif %}{% endfor %}</p>
+            <hr>
+        </h6>
+        <h4>{{auction.title}}</h4>
+        <h3>{{auction.description }}</h3>
+        <h5>Published by {{auction.seller}} on {{auction.created}}</h5>
+
+            <h2>Current Pice: USD {% if auction.bids.exists %}
+                {{ auction.bids.last.amount }} <span>(Latest bid by {{ auction.bids.last.bidder.username }}) </span>
+                {% else %}
+                {{ auction.starting_bid }}  <span>(No bids yet!)</span>
+                {% endif %}
+            </h2>
+            <hr>
+            {% if user.is_authenticated %}
+                {% if auction.active == True %}
+                <form method="post" action="{% url 'auctions' auction.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                    <input type="number" name="bid_amount" step="0.01" min="{{ auction.starting_bid }}" required>
+                    <button class="button-form place-bid btn btn-success" type="submit">Place Bid</button>
+                    </form>
+
+                    <form class="comment-form" method="post" action="{% url 'add_comment' auction.id %}">
+                    {% csrf_token %}
+                    
+                        <div class="textarea-wrapper">
+                            <textarea name="comment_text" rows="3" required></textarea>
+                        </div>
+                        <div class="button-wrapper">
+                            <button class="button-form add-cmt btn btn-info"  type="submit">Add Comment</button>
+                        </div>
+                    
+
+                    </form>
+
 
                 {% endif %}
             {% else %}
